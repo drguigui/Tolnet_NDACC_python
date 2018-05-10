@@ -197,7 +197,7 @@ def WriteTolnetNDAACFile(tofi, meta):
 
 
 if __name__ == "__main__":
-	print "Usage: ./commonTOLNETtondaac.py TOLNETfile.h5 metafile"
+	print "Usage: ./commonTOLNETtondaac.py TOLNETfile.txt metafile"
 	if True:
 
 #	try:

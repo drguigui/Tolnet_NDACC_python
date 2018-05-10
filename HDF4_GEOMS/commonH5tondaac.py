@@ -63,10 +63,7 @@ def LoadH5File(hfil):
 
 	mandatory_variables = {}
 	optional_variables = {}
-
 	da =h5py.File(hfil)
-
-	
 	for (a,b) in  da["INSTRUMENT_ATTRIBUTES"].attrs.iteritems():
 		if "Location_Latitude" in a:
 
@@ -88,14 +85,6 @@ def LoadH5File(hfil):
 			val = float(tmp[0])
 			print "Altitude", val
 			mandatory_variables["elev"] = array([val])
-		#if "Start Time Data Acquisition" in a:
-	#		mandatory_variables["datetimestart"] = b
-	#	if "End Time Data Acquisition" in a:
-	#		mandatory_variables["datetimestop"] = b
-	#	i += 1
-	#import sys
-	#sys.exit()
-
 	print "DATETIME/datetime"
 	print "INTEGRATION.TIME/integhrs"
 	print da["DATA"]["TIME_MID_UT"].value[0], da["DATA"]["TIME_MID_UT_UNIX"].value[0] ,da["DATA"]["TIME_MID_UT_DATEVEC"].value[0]
@@ -103,14 +92,7 @@ def LoadH5File(hfil):
 	mandatory_variables["datetime"] = TimeUnixToMJD2K(da["DATA"]["TIME_MID_UT_UNIX"].value)
 	mandatory_variables["datetimestart"] = TimeUnixToMJD2K(da["DATA"]["TIME_START_UT_UNIX"].value)
 	mandatory_variables["datetimestop"] = TimeUnixToMJD2K(da["DATA"]["TIME_STOP_UT_UNIX"].value) 
-
-
-	integ = []
-	for i in range(len(mandatory_variables["datetimestart"] )):
-		dttt = (mandatory_variables["datetimestop"] -  mandatory_variables["datetimestart"]) * 24.
-		integ.append(dttt)
-
-
+	dttt = (mandatory_variables["datetimestop"] -  mandatory_variables["datetimestart"]) * 24.
 
 	mandatory_variables["integhrs"] = array(dttt)
 	mandatory_variables["z"] = da["DATA"]["ALT"].value
@@ -125,20 +107,8 @@ def LoadH5File(hfil):
 	mandatory_variables["uo3mrsyst"] = sqrt( mandatory_variables["uo3mr"] ** 2 -  mandatory_variables["uo3mrrand"] ** 2)
 	mandatory_variables["xp"] =da["DATA"]["Press"].value
 	mandatory_variables["xt"] =da["DATA"]["Temp"].value
-	mandatory_variables["xpsce"] = "GEOS-5"
-	mandatory_variables["xtsce"] =  "GEOS-5"
-
-
-
-
-
-
-
-
-
-
-
-
+	mandatory_variables["xpsce"] = "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
+	mandatory_variables["xtsce"] =  "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
 	return mandatory_variables, optional_variables
 
 

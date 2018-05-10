@@ -18,7 +18,12 @@ guillaume.p.gronoff@nasa.gov
 
 
 Example of h5 to hdf4 conversion:
-./commonH5tondaac.py TOLNet-O3_LMOL_20170801_R0.h5 GEOMS-LIDAR-O3-005-LMOL.txt
+./commonH5tondaac.py TestFiles/owlets-CBBT-LMOL_LaRC-Lidar_20170719_R0.h5 TestFiles/GEOMS-LIDAR-O3-005-redacted.txt 
+The "groundbased" file should pass the GEOMS checks.
+The GEOMS-LIDAR file should be modified accordingly to the station.
+The GEOMS-LIDAR file given as an example is optimized for a curtain, and not for a single profile.
+
+
 
 **********************************************
 
