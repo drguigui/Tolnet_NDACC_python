@@ -1,0 +1,23 @@
+TOLNET/NDACC Vertical resolution algorithm in C++. 
+
+The standalone algorithm are in:
+resolutiondf.cpp
+resolutionir.cpp
+the main function does a simple example of resolution computation.
+
+
+
+The comparison of the C++ version of the algorithm against Dr. T. Leblanc (JPL) IDL version is found in:
+analyzeall.cpp
+
+
+Tested with g++.
+Compilation/use example:
+g++ anlyzeall.cpp
+./a.out
+
+
+
+TODO: copy Thierry's documentation for the variables
+
+

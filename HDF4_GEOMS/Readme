@@ -1,0 +1,54 @@
+Python code to change a O3 lidar data file into a HDF4 file for GEOMS.
+
+
+Since the GEOMS variables name are very long, it is necessary to install the fork of the python-hdf4 library that accounts for extended variables.
+This fork is located at:
+https://github.com/fhs/python-hdf4/
+
+
+The variable names for the O3 lidar are found on:
+https://avdc.gsfc.nasa.gov/index.php?site=455555165#GEOMS-TE-LIDAR-O3-VA
+
+The quality assurance can be found on:
+https://avdc.gsfc.nasa.gov/index.php?site=1829327959
+It is greatly suggested to check your file against it, and ask help from the administrator if e.g. the PI/station name is not on the standard list.
+Questions related to this code can be asked to:
+guillaume.p.gronoff@nasa.gov
+
+
+
+Example of h5 to hdf4 conversion:
+./commonH5tondaac.py TOLNet-O3_LMOL_20170801_R0.h5 GEOMS-LIDAR-O3-005-LMOL.txt
+
+**********************************************
+
+
+commonH5tondaac.py : reads a H5 file (Sullivan/Gronoff common format for the 2017 OWLETS campaign) along with a GEOMs file and returns the NDACC hdf4
+commonTOLNETtondaac.py : (Work in progress) reads a TOLNET ascii file  along with a GEOMs file and returns the NDACC hdf4
+
+
+
+readhd4.py   : Test file to read a O3 lidar hdf file
+
+write_ndacc_HDF.py : Main file for reading the GEOMS file and writing the HDF file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

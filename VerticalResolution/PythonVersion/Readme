@@ -1,0 +1,17 @@
+TOLNET/NDACC Vertical resolution algorithm in python 
+
+The standalone algorithm are in:
+ResolutionDF.py
+ResolutionIR.py
+Running these codes in a standalone mode solves a little example.
+
+The Savitzky-Golay filters are found in:
+filtering.py
+
+The comparison of the Python version of the algorithm against Dr. T. Leblanc (JPL) IDL version is found in:
+checkresolution.py
+
+
+TODO: copy Thierry's documentation for the variables
+clean the code
+
