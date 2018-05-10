@@ -130,7 +130,7 @@ def LoadH5File(hfil):
 	return mandatory_variables, optional_variables
 
 def ReadTolnetFile(fi):
-	f = open(fi)
+	f = open(fi,'r')
 	da = []
 	mandatory_variables = {}
 	optional_variables = {}
@@ -151,47 +151,61 @@ def ReadTolnetFile(fi):
 #	print "date", da[11 - 1 + ngh + ngc]
 
 
+	altitudes = []
+
 	for nb in range((nprof)):
     		bprof = 2 + ngh + ngc + (nph + nalt + 2) * nb
     		firstl = bprof + 2 + nph 
     		lastl = bprof + 1 + nph  + nalt 
     		date = bprof + 6
-      		tstartdate = datetime.strptime(da[date][:40].strip(), "%Y-%m-%d, %H:%M:%S")
-      		tenddate = datetime.strptime(da[date + 1][:40].strip(), "%Y-%m-%d, %H:%M:%S")
-      		tmiddate = datetime.strptime(da[date + 2][:40].strip(), "%Y-%m-%d, %H:%M:%S")
-		#if vdate != da[date]:
-		#	continue
-
-		if not(tstartdate < vdate and tenddate > vdate):
-			continue
-
-
-		print "We have the number", nb
-
-
+      		tstartdate = datetime.datetime.strptime(da[date][:40].strip(), "%Y-%m-%d, %H:%M:%S")
+      		tenddate = datetime.datetime.strptime(da[date + 1][:40].strip(), "%Y-%m-%d, %H:%M:%S")
+      		tmiddate = datetime.datetime.strptime(da[date + 2][:40].strip(), "%Y-%m-%d, %H:%M:%S")
 		altitude = []
 		O3 = []
 		O3unc = []
-
 		for i in range(firstl, lastl):
 			vals = da[i].split(",")
 			altitude.append(float(vals[0]))
 			O3.append(float(vals[6]))
 			O3unc.append(float(vals[7]))
+
+		altitudes.append(altitude)
 	#	return array(altitude), array(O3), array(O3unc)
 
 
+
+
+	# 1) Take latitude, longitude, and altitude
+
+	# 2) Datetime for all profiles and integration
+
+	# 3) altitude grid
+	#print altitude
+	mandatory_variables["z"] = altitude[0]
+	# 4) o3nd, uo3nd....
+	# 5) dz
+	# 6) Mixing ratio
+	# 7) Pressure
+	# 8) temperature
+
+
+
+
+	mandatory_variables["xpsce"] = "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
+	mandatory_variables["xtsce"] =  "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
+	sys.exit()
 	return mandatory_variables, optional_variables
 
 
 
 
 def WriteNDAACFile(hfi, meta):
-	mand, opt = ReadTolnetFile(hfi)
+	mand, opt = LoadH5File(hfi)
 	write_NDACC_HDF4_O3(meta, mand, opt)
 
 def WriteTolnetNDAACFile(tofi, meta):
-	mand, opt = LoadH5File(tofi)
+	mand, opt = ReadTolnetFile(tofi)
 	write_NDACC_HDF4_O3(meta, mand, opt)
 
 
@@ -203,7 +217,7 @@ if __name__ == "__main__":
 #	try:
 		tofi = sys.argv[1]
 		meta = sys.argv[2]
-		print h5fi, meta
+		print tofi, meta
 		#WriteNDAACFile(h5fi, meta)
 		WriteTolnetNDAACFile(tofi, meta)
 #	except:
