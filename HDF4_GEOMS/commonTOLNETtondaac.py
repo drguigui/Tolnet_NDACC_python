@@ -130,6 +130,7 @@ def LoadH5File(hfil):
 	return mandatory_variables, optional_variables
 
 def ReadTolnetFile(fi):
+	""" This function reads a TOLnet file that has the same number of altitudes/comment lines for each profiles. Otherwise, it is not possible to create a unique GEOMS curtain plot."""
 	f = open(fi,'r')
 	da = []
 	mandatory_variables = {}
@@ -151,39 +152,117 @@ def ReadTolnetFile(fi):
 #	print "date", da[11 - 1 + ngh + ngc]
 
 
+	locationline =  da[2 + ngh - 1 + 4].strip().split(" ")
+
+	longitude = float(locationline[0].strip(","))
+	latitude = float(locationline[1].strip(","))
+	altASL = float(locationline[2].strip())
+
+	# 1) Take latitude, longitude, and altitude
+	mandatory_variables["lat"] = array([latitude])
+	mandatory_variables["lon"] = array([longitude])
+	mandatory_variables["elev"] = array([altASL])
+	
 	altitudes = []
+	starttime = []
+	endtime = []
+	middletime = []
+	integrhours = []
+	O3s = []   # O3 VMR in PPBV
+	O3uncs = [] # O3 VMR uncertainty
+	O3nds = []
+	O3nduncerts = []
+	Resolutions = []
+	Precisions = []
+	Pressures = []
+	Temperatures = []
+
+
+
+	# 2) Datetime for all profiles and integration
+
 
 	for nb in range((nprof)):
     		bprof = 2 + ngh + ngc + (nph + nalt + 2) * nb
     		firstl = bprof + 2 + nph 
     		lastl = bprof + 1 + nph  + nalt 
     		date = bprof + 6
-      		tstartdate = datetime.datetime.strptime(da[date][:40].strip(), "%Y-%m-%d, %H:%M:%S")
-      		tenddate = datetime.datetime.strptime(da[date + 1][:40].strip(), "%Y-%m-%d, %H:%M:%S")
-      		tmiddate = datetime.datetime.strptime(da[date + 2][:40].strip(), "%Y-%m-%d, %H:%M:%S")
+      		tstartdate = DatetimeToMJD2K(datetime.datetime.strptime(da[date][:40].strip(), "%Y-%m-%d, %H:%M:%S").replace(tzinfo=pytz.utc))
+      		tenddate = DatetimeToMJD2K(datetime.datetime.strptime(da[date + 1][:40].strip(), "%Y-%m-%d, %H:%M:%S").replace(tzinfo=pytz.utc))
+      		tmiddate = DatetimeToMJD2K(datetime.datetime.strptime(da[date + 2][:40].strip(), "%Y-%m-%d, %H:%M:%S").replace(tzinfo=pytz.utc))
+		integr = (tenddate - tstartdate) * 24.
+		starttime.append(tstartdate)
+		endtime.append(tenddate)
+		middletime.append(tmiddate)
+		integrhours.append(integr)
 		altitude = []
-		O3 = []
-		O3unc = []
+		O3 = []   # O3 VMR in PPBV
+		O3unc = [] # O3 VMR uncertainty
+		O3nd = []
+		O3nduncert = []
+		Resolution = []
+		Precision = []
+		Pressure = []
+		Temperature = []
+
 		for i in range(firstl, lastl):
 			vals = da[i].split(",")
 			altitude.append(float(vals[0]))
+			O3nd.append(float(vals[1]))
+			O3nduncert.append(float(vals[2]))
+			Resolution.append(float(vals[3]))
+			Precision.append(float(vals[4]))
 			O3.append(float(vals[6]))
 			O3unc.append(float(vals[7]))
+			Pressure.append(float(vals[8]))
+			Temperature.append(float(vals[10]))
+
+		O3s.append(O3)
+		O3uncs.append(O3unc)
+		O3nds.append(O3nd)
+		O3nduncerts.append(O3nduncert)
+		Resolutions.append(Resolution)
+		Precisions.append(Precision)
+		Pressures.append(Pressure)
+		Temperatures.append(Temperature)
+
+
+
 
 		altitudes.append(altitude)
 	#	return array(altitude), array(O3), array(O3unc)
 
-
-
-
-	# 1) Take latitude, longitude, and altitude
-
-	# 2) Datetime for all profiles and integration
-
+	integrhours = array(integrhours)
+	O3s = array(O3s)
+	O3uncs = array(O3uncs)
+	O3nds = array(O3nds)
+	O3nduncerts = array(O3nduncerts)
+	Resolutions =array(Resolutions)
+	Precisions = array(Precisions)
+	Pressures = array(Pressures)
+	Temperatures = array(Temperatures)
+	mandatory_variables["datetime"] = array(middletime)
+	mandatory_variables["datetimestart"] = array(starttime)
+	mandatory_variables["datetimestop"] = array(endtime)
+	mandatory_variables["integhrs"] = integrhours
 	# 3) altitude grid
 	#print altitude
-	mandatory_variables["z"] = altitude[0]
+	mandatory_variables["z"] = altitudes[0]
 	# 4) o3nd, uo3nd....
+	mandatory_variables["o3nd"] = (O3nds)
+	mandatory_variables["uo3nd"] = (O3nduncerts)
+	mandatory_variables["uo3ndrand"] = Precisions * O3nds / 100. 
+	#transpose(da["DATA"]["Precision"].value) * transpose(da["DATA"]["O3ND"].value) / 100.
+	mandatory_variables["uo3ndsyst"] = sqrt( mandatory_variables["uo3nd"] ** 2 -  mandatory_variables["uo3ndrand"] ** 2)
+	mandatory_variables["dz"] = Resolutions
+	mandatory_variables["o3mr"] = O3s * 1e-3
+	mandatory_variables["uo3mr"] = O3uncs * 1e-3
+	mandatory_variables["uo3mrrand"] = Precisions * O3s / 100. * 1e-3
+	mandatory_variables["uo3mrsyst"] = sqrt( mandatory_variables["uo3mr"] ** 2 -  mandatory_variables["uo3mrrand"] ** 2)
+	mandatory_variables["xp"] = Pressures[0]
+	mandatory_variables["xt"] = Temperatures[0]
+
+
 	# 5) dz
 	# 6) Mixing ratio
 	# 7) Pressure
@@ -194,7 +273,7 @@ def ReadTolnetFile(fi):
 
 	mandatory_variables["xpsce"] = "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
 	mandatory_variables["xtsce"] =  "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
-	sys.exit()
+	print mandatory_variables
 	return mandatory_variables, optional_variables
 
 

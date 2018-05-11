@@ -18,10 +18,34 @@ guillaume.p.gronoff@nasa.gov
 
 
 Example of h5 to hdf4 conversion:
+
 ./commonH5tondaac.py TestFiles/owlets-CBBT-LMOL_LaRC-Lidar_20170719_R0.h5 TestFiles/GEOMS-LIDAR-O3-005-redacted.txt 
 The "groundbased" file should pass the GEOMS checks.
 The GEOMS-LIDAR file should be modified accordingly to the station.
 The GEOMS-LIDAR file given as an example is optimized for a curtain, and not for a single profile.
+
+
+Using a TOLnet common ASCII file and a GEOMS file:
+./commonTOLNETtondaac.py TestFiles/TOLNet-O3Lidar_LaRC_20160816_R0.dat TestFiles/GEOMS-LIDAR-O3-005-redacted.txt
+
+Nb: the pressure and temperatures are 1d vectors in this output
+It is optimized for curtains, not for a single profile
+
+If a single profile is used the GEOMS file may be modified from :  
+VAR_NAME = O3.MIXING.RATIO.VOLUME_DERIVED
+...
+VAR_DEPEND = DATETIME;ALTITUDE
+to: 
+VAR_NAME = O3.MIXING.RATIO.VOLUME_DERIVED
+...
+VAR_DEPEND = ALTITUDE
+
+for all the VAR_NAME that correspond to the curtain.
+
+
+
+*********************************************
+WARNING: be sure to delete the output file if re-launching the conversion. Otherwise the inputs of the second run will be added.
 
 
 
