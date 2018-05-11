@@ -53,30 +53,13 @@ WARNING: be sure to delete the output file if re-launching the conversion. Other
 
 
 commonH5tondaac.py : reads a H5 file (Sullivan/Gronoff common format for the 2017 OWLETS campaign) along with a GEOMs file and returns the NDACC hdf4
-commonTOLNETtondaac.py : (Work in progress) reads a TOLNET ascii file  along with a GEOMs file and returns the NDACC hdf4
+commonTOLNETtondaac.py : Reads a TOLNET ascii file  along with a GEOMs file and returns the NDACC hdf4
 
 
 
 readhd4.py   : Test file to read a O3 lidar hdf file
 
-write_ndacc_HDF.py : Main file for reading the GEOMS file and writing the HDF file
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+write_ndacc_HDF.py : Main file for reading the GEOMS file and writing the HDF file. If another converter has to be writted, it should use that file
 
 
 
