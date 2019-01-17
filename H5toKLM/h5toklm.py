@@ -49,15 +49,28 @@ alt=  da["DATA"]["ALT"].value # Altitude in m
 
 deltaalt = abs(alt[1] - alt[0]) / 2.
 
-l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"][0].strip()
-l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"][0].strip()
-lat= float(l1[:-1])
-lon = float(l2[:-1])
-if "S" in l1:
-    lat = -lat
-if "W" in l2:
-    lon = -lon
-print lat, lon, l1, l2
+try:
+    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"][0].strip()
+    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"][0].strip()
+    lat= abs(float(l1[:-1]))
+    lon = abs(float(l2[:-1]))
+    if "S" in l1:
+        lat = -lat
+    if "E" in l2:
+        lon = -lon
+    print lat, lon, l1, l2
+except:
+    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"].strip()
+    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"].strip()
+    lat= float(l1[:-1])
+    lon = float(l2[:-1])
+    if "S" in l1:
+        lat = -lat
+    if "E" in l2:
+        lon = -lon
+    print lat, lon, l1, l2
+    import sys
+    sys.exit()
 
 kml = simplekml.Kml()
 
