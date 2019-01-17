@@ -69,8 +69,6 @@ except:
     if "E" in l2:
         lon = -lon
     print lat, lon, l1, l2
-    import sys
-    sys.exit()
 
 kml = simplekml.Kml()
 
