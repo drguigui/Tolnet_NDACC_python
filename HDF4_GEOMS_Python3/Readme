@@ -1,0 +1,51 @@
+Python code to change a O3 lidar data file into a HDF4 file for GEOMS. This version is for python 3, and has been tested for the python-hdf4 library for the conda distribution, installed through
+ conda install -c conda-forge pyhdf 
+
+The variable names for the O3 lidar are found on:
+https://avdc.gsfc.nasa.gov/index.php?site=455555165#GEOMS-TE-LIDAR-O3-VA
+
+The quality assurance can be found on:
+https://avdc.gsfc.nasa.gov/index.php?site=1829327959
+It is greatly suggested to check your file against it, and ask help from the administrator if e.g. the PI/station name is not on the standard list.
+Questions related to this code can be asked to:
+guillaume.p.gronoff@nasa.gov
+
+
+
+Example of h5 to hdf4 conversion:
+
+./commonH5tondaac.py TestFiles/owlets-CBBT-LMOL_LaRC-Lidar_20170719_R0.h5 TestFiles/GEOMS-LIDAR-O3-005-redacted.txt 
+The "groundbased" file should pass the GEOMS checks.
+The GEOMS-LIDAR file should be modified accordingly to the station.
+The GEOMS-LIDAR file given as an example is optimized for a curtain, and not for a single profile.
+
+
+Nb: the pressure and temperatures are 1d vectors in this output
+It is optimized for curtains, not for a single profile
+
+If a single profile is used the GEOMS file may be modified from :  
+VAR_NAME = O3.MIXING.RATIO.VOLUME_DERIVED
+...
+VAR_DEPEND = DATETIME;ALTITUDE
+to: 
+VAR_NAME = O3.MIXING.RATIO.VOLUME_DERIVED
+...
+VAR_DEPEND = ALTITUDE
+
+for all the VAR_NAME that correspond to the curtain.
+
+
+
+*********************************************
+WARNING: be sure to delete the output file if re-launching the conversion. Otherwise the inputs of the second run will be added.
+
+
+
+commonH5tondaac.py : reads a H5 file (Sullivan/Gronoff common format for the 2017 OWLETS campaign) along with a GEOMs file and returns the NDACC hdf4
+
+write_ndacc_HDF.py : Main file for reading the GEOMS file and writing the HDF file. If another converter has to be writted, it should use that file
+
+
+PlotLMOLhdf.py : allows to plot a hdf4 file in argument using matplotlib.
+
+
