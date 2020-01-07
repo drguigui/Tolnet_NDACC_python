@@ -2,9 +2,9 @@
 from __future__ import division
 import sys
 import pytz
-print "For quick view only"
-print "Disclaimer: known bugs on maximum value of 100ppbv and if data are cut in time"
-print "Contact Guillaume.P.Gronoff@nasa.gov for better plots"
+print( "For quick view only")
+print( "Disclaimer: known bugs on maximum value of 100ppbv and if data are cut in time")
+print( "Contact Guillaume.P.Gronoff@nasa.gov for better plots")
 import simplekml
 import h5py
 from pylab import *
@@ -50,31 +50,31 @@ alt=  da["DATA"]["ALT"].value # Altitude in m
 deltaalt = abs(alt[1] - alt[0]) / 2.
 
 try:
-    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"][0].strip()
-    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"][0].strip()
+    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"][0].decode().strip()
+    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"][0].decode().strip()
+    #print((l1))
     lat= abs(float(l1[:-1]))
     lon = abs(float(l2[:-1]))
     if "S" in l1:
         lat = -lat
-    if "E" in l2:
+    if "W" in l2:
         lon = -lon
-    print lat, lon, l1, l2
+    print( lat, lon, l1, l2)
 except:
-    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"].strip()
-    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"].strip()
+    l1 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Latitude"].decode().strip()
+    l2 = da["INSTRUMENT_ATTRIBUTES"].attrs["Location_Longitude"].decode().strip()
     lat= float(l1[:-1])
     lon = float(l2[:-1])
     if "S" in l1:
         lat = -lat
-    if "E" in l2:
+    if "W" in l2:
         lon = -lon
-    print lat, lon, l1, l2
-sys.exit()
+    print( lat, lon, l1, l2)
 kml = simplekml.Kml()
 
 #data = data[::-1]
 for i in range(len(da["DATA"]["TIME_START_UT_UNIX"])):
-    print i
+    print( i)
     time1 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_START_UT_UNIX"].value[i] / 1e3, pytz.utc).isoformat()
     time2 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_STOP_UT_UNIX"].value[i] / 1e3, pytz.utc).isoformat()
 
@@ -83,7 +83,7 @@ for i in range(len(da["DATA"]["TIME_START_UT_UNIX"])):
 
     for a in range(len(alt)):
         if MR[a] > 0 and MR[a] < 9999:
-            print lat,lon, (alt[a] - deltaalt)[0]
+            print(lat,lon, (alt[a] - deltaalt)[0])
             lin = kml.newlinestring(name="LMOL O3 [ppbv]", description="altitude: "+str(alt[a][0])+" m <br/> value: "+ str(int(MR[a])) +" ppbv", coords=[(lon,lat, (alt[a] - deltaalt)[0]), (lon,lat, (alt[a] + deltaalt)[0])])
             lin.linestyle.width= 20
             lin.linestyle.color= ValueToColor(MR[a])
