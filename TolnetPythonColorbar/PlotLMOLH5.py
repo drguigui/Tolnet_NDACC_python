@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-from __future__ import division
+#!/usr/bin/env python3
+#from __future__ import division
 from pylab import *
 import h5py
 import sys
@@ -12,33 +12,35 @@ print("Contact Guillaume.P.Gronoff@nasa.gov for better plots")
 da =h5py.File(sys.argv[1])
 
 def DatetimeToDatenum(dt):
-#	ordi = dt.toordinal()
-	mdn = dt + datetime.timedelta(days = 366)
-	frac = (dt - datetime.datetime(dt.year,dt.month,dt.day,0,0,0)).seconds / (24.0 * 60.0 * 60.0)
-	return mdn.toordinal() + frac
+#   ordi = dt.toordinal()
+    mdn = dt + datetime.timedelta(days = 366)
+    frac = (dt - datetime.datetime(dt.year,dt.month,dt.day,0,0,0)).seconds / (24.0 * 60.0 * 60.0)
+    return mdn.toordinal() + frac
 
 
 
 def DatenumToDatetime(nb):
-	return datetime.datetime(1,1,1) + datetime.timedelta(nb -1 - 366, 0,0,0,0,0,0)
+    return datetime.datetime(1,1,1) + datetime.timedelta(nb -1 - 366, 0,0,0,0,0,0)
 
 
 print(da.items())
 
 i = 0
 for (a,b) in  da["INSTRUMENT_ATTRIBUTES"].attrs.items(): #.iteritems():
-	print( i, a, b)
-	i += 1
+    print( i, a, b)
+    i += 1
 print( da["DATA"].items())
 
-data = da["DATA"]["O3MR"].value
+data = da["DATA"]["O3MR"][()]
 data[data>100] = 100
 data[data<0] = 0
 data = data[::-1]
-time1 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_START_UT_UNIX"].value[0] / 1e3, pytz.utc)
-time2 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_STOP_UT_UNIX"].value[-1] / 1e3, pytz.utc)
+print(da["DATA"]["TIME_START_UT_UNIX"][()][0])
+time1 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_START_UT_UNIX"][()][0][0] / 1e3, pytz.utc)
+time2 = datetime.datetime.fromtimestamp(da["DATA"]["TIME_STOP_UT_UNIX"][()][-1][0] / 1e3, pytz.utc)
 xlims = [time1, time2]
 x_lims = matplotlib.dates.date2num(xlims)
+
 
 fig=figure()
 ax = subplot(221)
@@ -60,15 +62,15 @@ nnorm = mpl.colors.BoundaryNorm(bounds, ncmap.N)
 title("O3 Mixing Ratio [PPBV]")
 ylabel("Altitude [m]")
 xlabel("Time [UTC]")
-alt=  da["DATA"]["ALT"].value
-y_lims = [alt[0], alt[-1]]
+alt=  da["DATA"]["ALT"][()]
+y_lims = [alt[0][0], alt[-1][0]]
+print(x_lims, y_lims)
 ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]], cmap = ncmap, norm=nnorm)
 
 ax.xaxis_date()
 fig.autofmt_xdate()
 
 colorbar(ax.get_children()[-2], ax=ax)
-
 
 
 
@@ -84,30 +86,30 @@ colorbar(ax.get_children()[-2], ax=ax)
 
 
 try:
-	ax = subplot(222)
-	title("Aerosols Beta")
-	ylabel("Altitude [m]")
-	xlabel("Time [UTC]")
-	data = da["DATA"]["AerosolsBeta"].value
-#data[data>500] = 500
-	data[data<0] = 0
-	data = data[::-1]
+    ax = subplot(222)
+    title("Aerosols Beta")
+    ylabel("Altitude [m]")
+    xlabel("Time [UTC]")
+    data = da["DATA"]["AerosolsBeta"][()]
+    data[data>1] = 1
+    data[data<0] = 0
+    data = data[::-1]
 #x_lims = list(map(datetime.datetime.fromtimestamp, [da["DATA"]["TIME_START_UT_UNIX"].value[0] / 1e3,  da["DATA"]["TIME_STOP_UT_UNIX"].value[-1] /1e3]))
 #x_lims = matplotlib.dates.date2num(x_lims)
 
-	alt=  da["DATA"]["ALT"].value
-	y_lims = [alt[0], alt[-1]]
+    alt=  da["DATA"]["ALT"][()]
+    y_lims = [alt[0][0], alt[-1][0]]
 
-	ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]])
-	ax.xaxis_date()
-	fig.autofmt_xdate()
+    ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]])
+    ax.xaxis_date()
+    fig.autofmt_xdate()
 #try:
-	colorbar(ax.get_children()[-2], ax=ax)
+    colorbar(ax.get_children()[-2], ax=ax)
 #
 
 #try:
 except:
-	print("No aerosols")
+    print("No aerosols")
 #colorbar(ax.get_children()[2], ax=ax)
 
 
@@ -116,15 +118,15 @@ ax = subplot(224)
 title("Vertical Resolution [m]")
 ylabel("Altitude [m]")
 xlabel("Time [UTC]")
-data = da["DATA"]["O3NDResol"].value
+data = da["DATA"]["O3NDResol"][()]
 #data[data>500] = 500
 data[data<0] = 0
 data = data[::-1]
 #x_lims = list(map(datetime.datetime.fromtimestamp, [da["DATA"]["TIME_START_UT_UNIX"].value[0] / 1e3,  da["DATA"]["TIME_STOP_UT_UNIX"].value[-1] /1e3]))
 #x_lims = matplotlib.dates.date2num(x_lims)
 
-alt=  da["DATA"]["ALT"].value
-y_lims = [alt[0], alt[-1]]
+alt=  da["DATA"]["ALT"][()]
+y_lims = [alt[0][0], alt[-1][0]]
 
 ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]])
 ax.xaxis_date()
@@ -139,12 +141,12 @@ ax = subplot(223)
 title("O3 Mixing Ratio Uncertainty [PPBV]")
 ylabel("Altitude [m]")
 xlabel("Time [UTC]")
-data = da["DATA"]["O3MRUncert"].value
+data = da["DATA"]["O3MRUncert"][()]
 data[data>100] = 100
 data[data<0] = 0
 data = data[::-1]
-alt=  da["DATA"]["ALT"].value
-y_lims = [alt[0], alt[-1]]
+alt=  da["DATA"]["ALT"][()]
+y_lims = [alt[0][0], alt[-1][0]]
 ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]])
 ax.xaxis_date()
 fig.autofmt_xdate()
