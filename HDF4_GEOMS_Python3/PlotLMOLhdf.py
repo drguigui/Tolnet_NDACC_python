@@ -8,6 +8,7 @@ from pyhdf.SD import *
 #from pyhdf import SDC
 import sys
 import pytz
+import matplotlib.dates as mdates
 print("For quick view only")
 print("Disclaimer: known bugs on maximum value of 100ppbv and if data are cut in time")
 print("Contact Guillaume.P.Gronoff@nasa.gov for better plots")
@@ -84,11 +85,19 @@ xlabel("Time [UTC]")
 alt=  da.select("ALTITUDE") 
 #alt = alt[:] 
 #alt = alt[::-1]
-y_lims = [alt[0], alt[-1]]
+y_lims = [alt[0][0], alt[-1][0]]
+#print(type(data))
+#print(data)
+
+print(x_lims, y_lims)
 ax.imshow((abs(data)), interpolation='nearest', aspect='auto', extent= [x_lims[0], x_lims[1],  y_lims[0], y_lims[1]], cmap = ncmap, norm=nnorm)
 #ax.imshow((abs(data)), interpolation='nearest', aspect='auto', cmap = ncmap, norm=nnorm)
 
 ax.xaxis_date()
+
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H"))
+ax.xaxis.set_minor_formatter(mdates.DateFormatter("%H"))
+
 fig.autofmt_xdate()
 
 colorbar(ax.get_children()[-2], ax=ax)
