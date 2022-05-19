@@ -111,7 +111,7 @@ def write_NDACC_HDF4_O3(metafile, mandatory_variables, optional_variables = {},p
 
     tmp = attributes["DATA_DISCIPLINE"].split(";")
     fileout += tmp[-1].lower() +"_"
-    fileout += attributes["DATA_SOURCE"].lower() + "_"
+    fileout += attributes["DATA_SOURCE"].lower() + "_hires_"
     fileout += attributes["DATA_LOCATION"].lower().split(";")[0] + "_"
     fileout += attributes["DATA_START_DATE"].lower() +"_"
     fileout += attributes["DATA_STOP_DATE"].lower() + "_"

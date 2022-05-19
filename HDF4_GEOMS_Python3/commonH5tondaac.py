@@ -99,18 +99,18 @@ def LoadH5File(hfil):
     dttt = (mandatory_variables["datetimestop"] -  mandatory_variables["datetimestart"]) * 24.
 
     mandatory_variables["integhrs"] = array(dttt)
-    mandatory_variables["z"] = da["DATA"]["ALT"].value
-    mandatory_variables["o3nd"] = transpose(da["DATA"]["O3ND"].value)
-    mandatory_variables["uo3nd"] = transpose(da["DATA"]["O3NDUncert"].value)
-    mandatory_variables["uo3ndrand"] = transpose(da["DATA"]["Precision"].value) * transpose(da["DATA"]["O3ND"].value) / 100.
+    mandatory_variables["z"] = da["DATA"]["ALT"][()]
+    mandatory_variables["o3nd"] = transpose(da["DATA"]["O3ND"][()])
+    mandatory_variables["uo3nd"] = transpose(da["DATA"]["O3NDUncert"][()])
+    mandatory_variables["uo3ndrand"] = transpose(da["DATA"]["Precision"][()]) * transpose(da["DATA"]["O3ND"][()]) / 100.
     mandatory_variables["uo3ndsyst"] = sqrt( mandatory_variables["uo3nd"] ** 2 -  mandatory_variables["uo3ndrand"] ** 2)
-    mandatory_variables["dz"] = transpose(da["DATA"]["O3NDResol"].value)
-    mandatory_variables["o3mr"] = transpose(da["DATA"]["O3MR"].value) * 1e-3
-    mandatory_variables["uo3mr"] = transpose(da["DATA"]["O3MRUncert"].value) * 1e-3
-    mandatory_variables["uo3mrrand"] = transpose(da["DATA"]["Precision"].value) * transpose(da["DATA"]["O3MR"].value) / 100. * 1e-3
+    mandatory_variables["dz"] = transpose(da["DATA"]["O3NDResol"][()])
+    mandatory_variables["o3mr"] = transpose(da["DATA"]["O3MR"][()]) * 1e-3
+    mandatory_variables["uo3mr"] = transpose(da["DATA"]["O3MRUncert"][()]) * 1e-3
+    mandatory_variables["uo3mrrand"] = transpose(da["DATA"]["Precision"][()]) * transpose(da["DATA"]["O3MR"][()]) / 100. * 1e-3
     mandatory_variables["uo3mrsyst"] = sqrt( mandatory_variables["uo3mr"] ** 2 -  mandatory_variables["uo3mrrand"] ** 2)
-    mandatory_variables["xp"] =da["DATA"]["Press"].value
-    mandatory_variables["xt"] =da["DATA"]["Temp"].value
+    mandatory_variables["xp"] =da["DATA"]["Press"][()]
+    mandatory_variables["xt"] =da["DATA"]["Temp"][()]
     mandatory_variables["xpsce"] = "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
     mandatory_variables["xtsce"] =  "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
     return mandatory_variables, optional_variables
