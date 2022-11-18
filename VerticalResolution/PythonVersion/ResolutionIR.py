@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-from __future__ import division
+#!/usr/bin/env python3
+
 from pylab import *
 
 
@@ -24,7 +24,7 @@ def NDAAC_ResolIr(vZsampling, vCoef, vIRinp):
     ir = zeros(nk)  
 
     if not (ncoef % 2): # the number of coefs is even, we reject
-        print "Error, The number of coefficients is even"
+        print("Error, The number of coefficients is even")
         return status, 0, irout
 
     if ncoef == 1 and vCoef[0] != 1: # We reject when one coeff different from 1
@@ -38,28 +38,28 @@ def NDAAC_ResolIr(vZsampling, vCoef, vIRinp):
         status = -1
         for ic in range(1, nc + 1): # Python is like IDL, subscript starts at 0
             if abs(vCoef[nc - ic]) < 1E-10 and abs(vCoef[nc + ic]) < 1E-10:
-                print "0th coeff"
+                print("0th coeff")
             elif abs(vCoef[nc - ic] - vCoef[nc + ic]) < 1E-3 * abs(vCoef[nc + ic]):
                 if status == 2:
                     status = 0
-                    print "error ir, we have a mix of symmetric and antisymmetric"
+                    print("error ir, we have a mix of symmetric and antisymmetric")
                     return status, 0, irout
                 status = 1
             elif (abs(vCoef[nc - ic] + vCoef[nc + ic]) < 1E-3 * abs(vCoef[nc + ic]) and vCoef[nc] == 0):
                 if status == 1:
                     status = 0
-                    print "error ir, we have a mix of symmetric and antisymmetric"
+                    print("error ir, we have a mix of symmetric and antisymmetric")
                     return status, 0, irout
                 status = 2
             else:
                     status = 0
-                    print "error ir, we have a mix of symmetric and antisymmetric"
+                    print("error ir, we have a mix of symmetric and antisymmetric")
                     return status, 0, irout
 
 
 #    print "0", irconvol
     if sum(irconvol) == 0 and irconvol.std() == 0:
-        irconvol[nk / 2] = 1
+        irconvol[nk // 2] = 1
 
     if status == 2:
         irtemp = zeros((len(irconvol)))
@@ -150,10 +150,10 @@ if '__main__' == __name__:
    # print  NDAAC_ResolIr(1, array([-3,-2,-1,0,1,2,3]) / 28., impulse)
    # print NDAAC_ResolIr(1, ones((25)) / 25, impulse)
  #   status, dz, impulse = NDAAC_ResolIr(7.5, ones((25)) / 25, impulse)
-    print "second"
-    print NDAAC_ResolIr(7.5, 1/2*array([-1,0,1]), impulse)
+    print("second")
+    print(NDAAC_ResolIr(7.5, 1/2*array([-1,0,1]), impulse))
     impulse = zeros((2400))
-    print NDAAC_ResolIr(7.5 * 25, 1/2*array([-1,0,1]), impulse)
+    print(NDAAC_ResolIr(7.5 * 25, 1/2*array([-1,0,1]), impulse))
     
 
 

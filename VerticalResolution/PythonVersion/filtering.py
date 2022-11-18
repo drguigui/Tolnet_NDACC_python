@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-from __future__ import division
+#!/usr/bin/env python3
+
 from pylab import *
 import random
 
@@ -21,7 +21,7 @@ def GenFact(a, b):
 def GramPoly(i, m , k, s):
     if k >  0:
         return (4 * k - 2) / (k * (2 * m - k + 1)) * (i * GramPoly(i, m, k - 1, s) + s * GramPoly(i, m, k - 1, s - 1)) -((k - 1) * (2 * m + k)) / (k * (2 * m - k + 1)) * GramPoly(i, m, k - 2, s)
-        print "probleme",k
+        print("probleme",k)
         return 0
     if k == 0 and s == 0:
             return 1
@@ -83,14 +83,14 @@ if '__main__' == __name__:
 
 # We do a first order derivative over 5 points
     weight = FilterWeight(0, 40, 4, 1)
-    print weight
+    print(weight)
     y4 = conv(y2, weight)
     plot(x, y4 * 10000/2)
 
 
 # We do a second order derivative over 5 points
     weight = FilterWeight(0, 40, 4, 2)
-    print weight
+    print(weight)
     y4 = conv(y2, weight)
     plot(x, y4 * 10000/2)
 
@@ -99,7 +99,7 @@ if '__main__' == __name__:
     clf()
 # We do a second order derivative over 5 points
     weight = FilterWeight(0, 2, 4, 2)
-    print weight
+    print(weight)
     y3 = conv(y, weight)
     plot(x, y3)
 
