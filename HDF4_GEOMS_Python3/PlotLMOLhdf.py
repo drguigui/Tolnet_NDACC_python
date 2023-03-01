@@ -82,10 +82,13 @@ nnorm = mpl.colors.BoundaryNorm(bounds, ncmap.N)
 title("O3 Mixing Ratio [PPBV]")
 ylabel("Altitude [m]")
 xlabel("Time [UTC]")
-alt=  da.select("ALTITUDE") 
+alt= array( da.select("ALTITUDE") ).flatten()
+#print(alt.shape)
+import sys
 #alt = alt[:] 
 #alt = alt[::-1]
-y_lims = [alt[0][0], alt[-1][0]]
+print(alt.shape)
+y_lims = [alt[0], alt[-1]]
 #print(type(data))
 #print(data)
 
@@ -100,7 +103,8 @@ ax.xaxis.set_minor_formatter(mdates.DateFormatter("%H"))
 
 fig.autofmt_xdate()
 
-colorbar(ax.get_children()[-2], ax=ax)
+#show()
+colorbar(ax.get_children()[0], ax=ax)
 print(data)
 
 show()

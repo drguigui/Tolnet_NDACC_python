@@ -99,7 +99,7 @@ def LoadH5File(hfil):
     dttt = (mandatory_variables["datetimestop"] -  mandatory_variables["datetimestart"]) * 24.
 
     mandatory_variables["integhrs"] = array(dttt)
-    mandatory_variables["z"] = da["DATA"]["ALT"][()]
+    mandatory_variables["z"] = array(da["DATA"]["ALT"][()]).flatten()
     mandatory_variables["o3nd"] = transpose(da["DATA"]["O3ND"][()])
     mandatory_variables["uo3nd"] = transpose(da["DATA"]["O3NDUncert"][()])
     mandatory_variables["uo3ndrand"] = transpose(da["DATA"]["Precision"][()]) * transpose(da["DATA"]["O3ND"][()]) / 100.
