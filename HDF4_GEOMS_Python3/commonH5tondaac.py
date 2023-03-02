@@ -109,10 +109,21 @@ def LoadH5File(hfil):
     mandatory_variables["uo3mr"] = transpose(da["DATA"]["O3MRUncert"][()]) * 1e-3
     mandatory_variables["uo3mrrand"] = transpose(da["DATA"]["Precision"][()]) * transpose(da["DATA"]["O3MR"][()]) / 100. * 1e-3
     mandatory_variables["uo3mrsyst"] = sqrt( mandatory_variables["uo3mr"] ** 2 -  mandatory_variables["uo3mrrand"] ** 2)
-    mandatory_variables["xp"] =da["DATA"]["Press"][()]
-    mandatory_variables["xt"] =da["DATA"]["Temp"][()]
-    mandatory_variables["xpsce"] = "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
-    mandatory_variables["xtsce"] =  "GEOS-5"  # HERE ADD THE ACTUAL SOURCE
+    mandatory_variables["xp"] =da["DATA"]["Press"][()].flatten()
+    mandatory_variables["xt"] =da["DATA"]["Temp"][()].flatten()
+
+    
+    # because this file format is made by maniacs with 0 brain cells
+#    src = "GEOS-5"
+#    import numpy as np
+#a    source = np.zeros((len(src)), dtype="S1")
+#    for k in range(len(src)):
+#        source[k] = src[k]
+    source = "GEOS-5"
+    #mandatory_variables["xpsce"] = source #[[source]*len(mandatory_variables["datetime"])]*len(mandatory_variables["z"]) # array([b"GEOS-5"]*len(mandatory_variables["z"]))  # HERE ADD THE ACTUAL SOURCE
+    #mandatory_variables["xtsce"] = source  # [[source]*len(mandatory_variables["datetime"])]*len(mandatory_variables["z"]) # array([b"GEOS-5"]*len(mandatory_variables["z"]))  # HERE ADD THE ACTUAL SOURCE
+    mandatory_variables["xpsce"] = [source]*len(mandatory_variables["z"]) # array([b"GEOS-5"]*len(mandatory_variables["z"]))  # HERE ADD THE ACTUAL SOURCE
+    mandatory_variables["xtsce"] =  [source]*len(mandatory_variables["z"]) # array([b"GEOS-5"]*len(mandatory_variables["z"]))  # HERE ADD THE ACTUAL SOURCE
     return mandatory_variables, optional_variables
 
 
