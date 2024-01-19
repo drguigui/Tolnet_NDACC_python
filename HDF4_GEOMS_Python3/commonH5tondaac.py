@@ -66,26 +66,42 @@ def LoadH5File(hfil):
     for (a,b) in  da["INSTRUMENT_ATTRIBUTES"].attrs.items():
         print("We are starting with the next attribute",a, b)
         try:
-            b[0] = b[0].decode("ASCII")
+            b = b.decode("ASCII")
         except:
-            pass
+            try:
+               # b = b.decode("UTF-8")
+                b = b[0].decode("ASCII")
+            except:
+                pass
+        print(a)
         if "Location_Latitude" in a:
-
-            tmp = b[0].strip().split(" ")
+            #tmp = b.strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
+            print(tmp)
             val = float(tmp[0])
             if "S" == tmp[1][0]:
                 val = -val
             print("Latitude", val)
             mandatory_variables["lat"] = array([val])
         if "Location_Longitude" in a:
-            tmp = b[0].strip().split(" ")
+            #tmp = b.strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
             val = float(tmp[0])
             if "W" == tmp[1][0]:
                 val = -val
             print("Longitude", val)
             mandatory_variables["lon"] = array([val])
         if "Location_ASL" in a:
-            tmp = b[0].strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
             val = float(tmp[0])
             print("Altitude", val)
             mandatory_variables["elev"] = array([val])
@@ -109,8 +125,8 @@ def LoadH5File(hfil):
     mandatory_variables["uo3mr"] = transpose(da["DATA"]["O3MRUncert"][()]) * 1e-3
     mandatory_variables["uo3mrrand"] = transpose(da["DATA"]["Precision"][()]) * transpose(da["DATA"]["O3MR"][()]) / 100. * 1e-3
     mandatory_variables["uo3mrsyst"] = sqrt( mandatory_variables["uo3mr"] ** 2 -  mandatory_variables["uo3mrrand"] ** 2)
-    mandatory_variables["xp"] =da["DATA"]["Press"][()].flatten()
-    mandatory_variables["xt"] =da["DATA"]["Temp"][()].flatten()
+    mandatory_variables["xp"] =transpose(da["DATA"]["Press"][()])#.flatten()
+    mandatory_variables["xt"] =transpose(da["DATA"]["Temp"][()])#.flatten()
 
     
     # because this file format is made by maniacs with 0 brain cells

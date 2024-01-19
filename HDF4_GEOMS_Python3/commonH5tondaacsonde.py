@@ -71,28 +71,44 @@ def LoadH5File(hfil):
     for (a,b) in  da["INSTRUMENT_ATTRIBUTES"].attrs.items():
         print("We are starting with the next attribute",a, b)
         try:
-            b[0] = b[0].decode("ASCII")
+            b = b.decode("ASCII")
         except:
-            pass
+            try:
+               # b = b.decode("UTF-8")
+                b = b[0].decode("ASCII")
+            except:
+                pass
+        print(a)
         if "Location_Latitude" in a:
-
-            tmp = b[0].strip().split(" ")
+            #tmp = b.strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
+            print(tmp)
             val = float(tmp[0])
             if "S" == tmp[1][0]:
                 val = -val
-            print( "Latitude", val)
+            print("Latitude", val)
             mandatory_variables["lat"] = array([val])
         if "Location_Longitude" in a:
-            tmp = b[0].strip().split(" ")
+            #tmp = b.strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
             val = float(tmp[0])
             if "W" == tmp[1][0]:
                 val = -val
-            print( "Longitude", val)
+            print("Longitude", val)
             mandatory_variables["lon"] = array([val])
         if "Location_ASL" in a:
-            tmp = b[0].strip().split(" ")
+            try:
+                tmp = b.strip().split(" ")
+            except:
+                tmp = b[0].strip().split(" ")
             val = float(tmp[0])
-            print( "Altitude", val)
+            print("Altitude", val)
             mandatory_variables["elev"] = array([val])
     print("DATETIME/datetime")
     print("INTEGRATION.TIME/integhrs")

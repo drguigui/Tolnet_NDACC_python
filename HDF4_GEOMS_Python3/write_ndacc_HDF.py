@@ -111,7 +111,7 @@ def write_NDACC_HDF4_O3(metafile, mandatory_variables, optional_variables = {},p
 
     tmp = attributes["DATA_DISCIPLINE"].split(";")
     fileout += tmp[-1].lower() +"_"
-    fileout += attributes["DATA_SOURCE"].lower() + "_hires_"
+    fileout += attributes["DATA_SOURCE"].lower() + "_"
     fileout += attributes["DATA_LOCATION"].lower().split(";")[0] + "_"
     fileout += attributes["DATA_START_DATE"].lower() +"_"
     fileout += attributes["DATA_STOP_DATE"].lower() + "_"
@@ -283,9 +283,16 @@ def write_NDACC_HDF4_O3(metafile, mandatory_variables, optional_variables = {},p
         if "STRING" == typ:
             valsize = 1
             if (varname == "TEMPERATURE_INDEPENDENT_SOURCE") or (varname == "PRESSURE_INDEPENDENT_SOURCE"):
-               valsize = "1" #len(mandatory_variables["z"])
+        #       valsize = len(mandatory_variables["z"])
+               #newshape = (len(value), 1)# (len(value), len(value[0]), len(value[0][0]))
+               newshape =  (len(value), len(value[0]))
+#              valsize = str(len(value))+";"+str(len(value[0])) #";".join([str(i) for i in value.shape])
+               valsize = str(len(value)) #";".join([str(i) for i in value.shape])
+             #  if len(value) >0:
+              #    valsize += ";" + str(len(value[0]))
             try:
-               v = d.create(varname, SDC.CHAR, value.shape)
+       #     if True:
+               v = d.create(varname, SDC.CHAR, newshape)
                setattr(v, "VAR_SIZE", str(valsize))
             except:
                v = d.create(varname, SDC.CHAR, (1))
